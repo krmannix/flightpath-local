@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  flightpath-tracker:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - HOUSE_LAT=${HOUSE_LAT}
+      - HOUSE_LON=${HOUSE_LON}
+      - BOUNDING_BOX_MILES=${BOUNDING_BOX_MILES:-5}
+      - MAX_ALTITUDE_FEET=${MAX_ALTITUDE_FEET:-15000}
+      - PORT=3000
+      - POLL_INTERVAL_SECONDS=${POLL_INTERVAL_SECONDS:-60}
+    restart: unless-stopped
+    container_name: flightpath-tracker
