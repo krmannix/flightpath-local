@@ -2,9 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
-const { parseCallsign, getAircraftTypeName } = require('./lib/mappings');
-const { calculateClosestApproach } = require('./lib/calculations');
-const { lookupFlightInfo } = require('./lib/flightdb');
+const { parseCallsign, getAircraftTypeName } = require("./lib/mappings");
+const { calculateClosestApproach } = require("./lib/calculations");
+const { lookupFlightInfo } = require("./lib/flightdb");
 
 // configuration
 const HOUSE_LAT = parseFloat(process.env.HOUSE_LAT);
@@ -19,20 +19,8 @@ if (isNaN(HOUSE_LAT) || isNaN(HOUSE_LON)) {
   process.exit(1);
 }
 
-// calculate bounding box (simple approximation)
-const MILES_TO_DEGREES = 1 / 69; // rough conversion
-const boxSize = BOUNDING_BOX_MILES * MILES_TO_DEGREES;
-
-const boundingBox = {
-  lamin: HOUSE_LAT - boxSize,
-  lomin: HOUSE_LON - boxSize,
-  lamax: HOUSE_LAT + boxSize,
-  lomax: HOUSE_LON + boxSize,
-};
-
 console.log("configuration:", {
   houseLocation: [HOUSE_LAT, HOUSE_LON],
-  boundingBox,
   maxAltitudeFeet: MAX_ALTITUDE_FEET,
   pollIntervalSeconds: POLL_INTERVAL_SECONDS,
 });
@@ -52,47 +40,47 @@ let serverStartTime = new Date();
 
 const axios = require("axios");
 
-// convert feet to meters (opensky uses meters)
-const MAX_ALTITUDE_METERS = MAX_ALTITUDE_FEET * 0.3048;
-
 async function fetchOverheadFlights() {
   try {
-    console.log('polling adsb exchange api...');
+    console.log("polling adsb exchange api...");
 
     const distanceNm = BOUNDING_BOX_MILES * 1.15078;
     const url = `https://globe.adsbexchange.com/api/v2/lat/${HOUSE_LAT}/lon/${HOUSE_LON}/dist/${distanceNm}`;
 
     const response = await axios.get(url, {
-      timeout: 10000
+      timeout: 10000,
     });
 
     if (!response.data || !response.data.ac) {
-      console.log('no flight data from api');
+      console.log("no flight data from api");
       return;
     }
 
-    const filtered = response.data.ac.filter(aircraft => {
+    const filtered = response.data.ac.filter((aircraft) => {
       const altitude = aircraft.alt_baro;
-      return altitude !== null && altitude !== 'ground' && altitude < MAX_ALTITUDE_FEET;
+      return (
+        altitude !== null &&
+        altitude !== "ground" &&
+        altitude < MAX_ALTITUDE_FEET
+      );
     });
 
     console.log(`found ${filtered.length} flights overhead`);
 
     const formatted = await Promise.all(filtered.map(formatFlight));
-    currentFlights = formatted.filter(f => f !== null);
+    currentFlights = formatted.filter((f) => f !== null);
     lastUpdate = new Date();
-
   } catch (error) {
-    console.error('adsb exchange api error:', error.message);
+    console.error("adsb exchange api error:", error.message);
   }
 }
 
 async function formatFlight(aircraft) {
   try {
-    const rawCallsign = aircraft.flight || aircraft.r || 'Unknown';
+    const rawCallsign = aircraft.flight || aircraft.r || "Unknown";
     const { airlineCode, displayCallsign } = parseCallsign(rawCallsign);
 
-    const altitude = aircraft.alt_baro !== 'ground' ? aircraft.alt_baro : null;
+    const altitude = aircraft.alt_baro !== "ground" ? aircraft.alt_baro : null;
     const speed = aircraft.gs || null;
     const heading = aircraft.track || null;
     const lat = aircraft.lat;
@@ -108,11 +96,11 @@ async function formatFlight(aircraft) {
       lat,
       lon,
       heading,
-      speed
+      speed,
     );
 
-    let origin = 'Unknown';
-    let destination = 'Unknown';
+    let origin = "Unknown";
+    let destination = "Unknown";
 
     if (airlineCode && displayCallsign !== rawCallsign) {
       const flightInfo = await lookupFlightInfo(displayCallsign);
@@ -137,10 +125,10 @@ async function formatFlight(aircraft) {
       closestDistance: approach.closestDistance,
       timeToClosest: approach.timeToClosest,
       isDirectFlyover: approach.isDirectFlyover,
-      lastUpdate: Date.now()
+      lastUpdate: Date.now(),
     };
   } catch (error) {
-    console.error('error formatting flight:', error);
+    console.error("error formatting flight:", error);
     return null;
   }
 }
