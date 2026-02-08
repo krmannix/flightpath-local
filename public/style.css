@@ -1,0 +1,161 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: #0a0e27;
+  color: #e0e0e0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  padding: 2rem;
+  position: relative;
+}
+
+/* status indicator */
+.status-indicator {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  opacity: 0.6;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #666;
+  transition: background 0.3s ease;
+}
+
+.status-dot.connected {
+  background: #4ade80;
+}
+
+.status-dot.cached {
+  background: #fbbf24;
+}
+
+.status-dot.error {
+  background: #ef4444;
+}
+
+/* flight display */
+.flight-display {
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.flight-card {
+  padding: 3rem;
+}
+
+.callsign {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+  animation: slideIn 0.5s ease;
+}
+
+.route {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #a0a0a0;
+  animation: slideIn 0.5s ease 0.1s both;
+}
+
+.equipment {
+  font-size: 1.5rem;
+  color: #707070;
+  margin-bottom: 2rem;
+  animation: slideIn 0.5s ease 0.2s both;
+}
+
+.indicator {
+  font-size: 1rem;
+  color: #505050;
+  animation: slideIn 0.5s ease 0.3s both;
+}
+
+/* no flights */
+.no-flights {
+  text-align: center;
+  padding: 4rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.no-flights .icon {
+  font-size: 5rem;
+  margin-bottom: 2rem;
+  opacity: 0.3;
+}
+
+.no-flights .message {
+  font-size: 1.5rem;
+  color: #707070;
+}
+
+/* error state */
+.error {
+  text-align: center;
+  padding: 4rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.error .message {
+  font-size: 1.5rem;
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.error .retry {
+  font-size: 1rem;
+  color: #707070;
+}
+
+/* animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* transitions for carousel */
+.flight-card.transitioning {
+  animation: fadeOut 0.3s ease;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>flightpath tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- status indicator -->
+    <div class="status-indicator">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-text" id="statusText">connecting...</span>
+    </div>
+
+    <!-- flight display -->
+    <div class="flight-display" id="flightDisplay">
+      <div class="flight-card">
+        <div class="callsign" id="callsign">---</div>
+        <div class="route" id="route">--- → ---</div>
+        <div class="equipment" id="equipment">---</div>
+        <div class="indicator" id="indicator"></div>
+      </div>
+    </div>
+
+    <!-- no flights message -->
+    <div class="no-flights" id="noFlights" style="display: none;">
+      <div class="icon">✈️</div>
+      <div class="message">clear skies - no flights overhead</div>
+    </div>
+
+    <!-- error message -->
+    <div class="error" id="error" style="display: none;">
+      <div class="message">unable to fetch flight data</div>
+      <div class="retry">retrying...</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
