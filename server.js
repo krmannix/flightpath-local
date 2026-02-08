@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 require("dotenv").config();
 const { parseCallsign, getAircraftTypeName } = require("./lib/mappings");
 const { calculateClosestApproach } = require("./lib/calculations");
