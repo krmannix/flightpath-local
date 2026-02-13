@@ -4,6 +4,7 @@ require("dotenv").config();
 const { parseCallsign, getAircraftTypeName } = require("./lib/mappings");
 const { calculateClosestApproach } = require("./lib/calculations");
 const { lookupFlightInfo } = require("./lib/flightdb");
+const { getOverheadFlights } = require("./lib/flightsource");
 
 // configuration
 const HOUSE_LAT = parseFloat(process.env.HOUSE_LAT);
@@ -37,51 +38,36 @@ let currentFlights = [];
 let lastUpdate = null;
 let serverStartTime = new Date();
 
-const axios = require("axios");
-
 async function fetchOverheadFlights() {
   try {
-    console.log("polling adsb exchange api...");
+    const provider = process.env.FLIGHT_DATA_PROVIDER || "airplanes.live";
+    console.log(`polling ${provider} api...`);
 
-    const distanceNm = BOUNDING_BOX_MILES * 1.15078;
-    const url = `https://globe.adsbexchange.com/api/v2/lat/${HOUSE_LAT}/lon/${HOUSE_LON}/dist/${distanceNm}`;
+    const aircraft = await getOverheadFlights(
+      HOUSE_LAT,
+      HOUSE_LON,
+      BOUNDING_BOX_MILES,
+      MAX_ALTITUDE_FEET,
+    );
 
-    const response = await axios.get(url, {
-      timeout: 10000,
-    });
+    console.log(`found ${aircraft.length} flights overhead`);
 
-    if (!response.data || !response.data.ac) {
-      console.log("no flight data from api");
-      return;
-    }
-
-    const filtered = response.data.ac.filter((aircraft) => {
-      const altitude = aircraft.alt_baro;
-      return (
-        altitude !== null &&
-        altitude !== "ground" &&
-        altitude < MAX_ALTITUDE_FEET
-      );
-    });
-
-    console.log(`found ${filtered.length} flights overhead`);
-
-    const formatted = await Promise.all(filtered.map(formatFlight));
+    const formatted = await Promise.all(aircraft.map(formatFlight));
     currentFlights = formatted.filter((f) => f !== null);
     lastUpdate = new Date();
   } catch (error) {
-    console.error("adsb exchange api error:", error.message);
+    console.error("flight data api error:", error.message);
   }
 }
 
 async function formatFlight(aircraft) {
   try {
-    const rawCallsign = aircraft.flight || aircraft.r || "Unknown";
+    const rawCallsign = aircraft.flight || aircraft.registration || "Unknown";
     const { airlineCode, displayCallsign } = parseCallsign(rawCallsign);
 
-    const altitude = aircraft.alt_baro !== "ground" ? aircraft.alt_baro : null;
-    const speed = aircraft.gs || null;
-    const heading = aircraft.track || null;
+    const altitude = aircraft.alt_baro;
+    const speed = aircraft.gs;
+    const heading = aircraft.track;
     const lat = aircraft.lat;
     const lon = aircraft.lon;
 
