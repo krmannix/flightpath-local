@@ -2,7 +2,11 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const { parseCallsign, getAircraftTypeName } = require("./lib/mappings");
-const { calculateClosestApproach } = require("./lib/calculations");
+const {
+  calculateClosestApproach,
+  calculateBearing,
+  bearingToCompass,
+} = require("./lib/calculations");
 const { lookupFlightInfo } = require("./lib/flightdb");
 const { getOverheadFlights } = require("./lib/flightsource");
 
@@ -84,6 +88,10 @@ async function formatFlight(aircraft) {
       speed,
     );
 
+    const bearing = calculateBearing(HOUSE_LAT, HOUSE_LON, lat, lon);
+    const compassDirection = bearingToCompass(bearing);
+    const isApproaching = approach.timeToClosest > 0;
+
     let origin = "Unknown";
     let destination = "Unknown";
 
@@ -110,6 +118,8 @@ async function formatFlight(aircraft) {
       closestDistance: approach.closestDistance,
       timeToClosest: approach.timeToClosest,
       isDirectFlyover: approach.isDirectFlyover,
+      bearing: compassDirection,
+      isApproaching: isApproaching,
       lastUpdate: Date.now(),
     };
   } catch (error) {

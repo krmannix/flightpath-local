@@ -112,6 +112,11 @@ function updateMetrics(flight) {
   } else {
     eta.textContent = formatCountdown(currentTimeToClosest);
   }
+
+  if (flight.bearing) {
+    const direction = flight.isApproaching ? "approaching" : "receding";
+    eta.textContent = `${eta.textContent} • ${flight.bearing} ${direction}`;
+  }
 }
 
 function formatCountdown(seconds) {
