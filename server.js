@@ -93,7 +93,7 @@ async function formatFlight(aircraft) {
       destination = flightInfo.destination;
     }
 
-    const aircraftType = getAircraftTypeName(aircraft.t);
+    const aircraftType = getAircraftTypeName(aircraft.type);
 
     return {
       callsign: displayCallsign,
