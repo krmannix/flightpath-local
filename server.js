@@ -90,6 +90,7 @@ async function formatFlight(aircraft) {
 
     const bearing = calculateBearing(HOUSE_LAT, HOUSE_LON, lat, lon);
     const compassDirection = bearingToCompass(bearing);
+    const headingCompass = bearingToCompass(heading);
     const isApproaching = approach.timeToClosest > 0;
 
     let origin = "Unknown";
@@ -114,6 +115,7 @@ async function formatFlight(aircraft) {
       altitude,
       speed,
       heading,
+      headingCompass,
       currentDistance: approach.currentDistance,
       closestDistance: approach.closestDistance,
       timeToClosest: approach.timeToClosest,
