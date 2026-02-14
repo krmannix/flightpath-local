@@ -59,7 +59,7 @@ function updateDisplay() {
   equipment.textContent = flight.equipment || "Unknown";
 
   if (flight.airlineCode) {
-    airlineLogo.src = `/logos/${flight.airlineCode}.png`;
+    airlineLogo.src = `/logos/${flight.airlineCode}.svg`;
     airlineLogo.style.display = "block";
     airlineLogo.onerror = function () {
       this.src = "/logos/fallback.svg";
@@ -115,7 +115,7 @@ function updateMetrics(flight) {
 
   if (flight.headingCompass) {
     const direction = flight.isApproaching ? "approaching" : "receding";
-    eta.textContent = `${eta.textContent} • headed ${flight.headingCompass} ${direction}`;
+    eta.textContent = `${eta.textContent} • headed ${flight.headingCompass} • ${direction}`;
   }
 }
 
