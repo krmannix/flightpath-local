@@ -7,7 +7,6 @@ const {
   calculateBearing,
   bearingToCompass,
 } = require("./lib/calculations");
-const { lookupFlightInfo } = require("./lib/flightdb");
 const { getOverheadFlights } = require("./lib/flightsource");
 
 // configuration
@@ -93,14 +92,8 @@ async function formatFlight(aircraft) {
     const headingCompass = bearingToCompass(heading);
     const isApproaching = approach.timeToClosest > 0;
 
-    let origin = "Unknown";
-    let destination = "Unknown";
-
-    if (airlineCode && displayCallsign !== rawCallsign) {
-      const flightInfo = await lookupFlightInfo(displayCallsign);
-      origin = flightInfo.origin;
-      destination = flightInfo.destination;
-    }
+    const origin = "Unknown";
+    const destination = "Unknown";
 
     const aircraftType = getAircraftTypeName(aircraft.type);
 
