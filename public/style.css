@@ -5,7 +5,9 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
   background: #0a0e27;
   color: #e0e0e0;
   height: 100vh;
@@ -66,8 +68,23 @@ body {
 .callsign {
   font-size: 4rem;
   font-weight: 700;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
   letter-spacing: 0.05em;
+  animation: slideIn 0.5s ease;
+}
+
+.callsign-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.airline-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
   animation: slideIn 0.5s ease;
 }
 
@@ -83,6 +100,27 @@ body {
   color: #707070;
   margin-bottom: 2rem;
   animation: slideIn 0.5s ease 0.2s both;
+}
+
+.metrics {
+  font-size: 1.25rem;
+  color: #a0a0a0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  animation: slideIn 0.5s ease 0.25s both;
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.metric span {
+  font-weight: 500;
 }
 
 .indicator {
